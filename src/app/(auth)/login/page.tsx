@@ -80,7 +80,7 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Username</label>
-                <input className="input" placeholder="admin1 or employee01" value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} autoComplete="username" />
+                <input className="input" placeholder="Enter your user ID" value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} autoComplete="username" />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
@@ -95,11 +95,6 @@ export default function LoginPage() {
                 {loading ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Signing in…</> : 'Sign In'}
               </button>
             </form>
-            <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-100">
-              <p className="text-xs font-semibold text-blue-700 mb-2">Demo Credentials</p>
-              <p className="text-xs text-blue-600">Admin: <span className="font-mono font-bold">admin1</span> / <span className="font-mono font-bold">Admin@123</span></p>
-              <p className="text-xs text-blue-600 mt-1">Employee: <span className="font-mono font-bold">employee01</span> / <span className="font-mono font-bold">Employee@123</span></p>
-            </div>
           </div>
         </motion.div>
       </div>
