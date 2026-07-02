@@ -4,7 +4,8 @@ let socket: Socket | null = null;
 
 export function getSocket(): Socket {
   if (!socket) {
-    socket = io('http://localhost:5000', { withCredentials: true, autoConnect: false });
+    const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    socket = io(url, { withCredentials: true, autoConnect: false });
   }
   return socket;
 }
