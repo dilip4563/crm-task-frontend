@@ -5,7 +5,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { notifApi } from '@/lib/api';
 import { getSocket, connectSocket } from '@/lib/socket';
 import { getUser } from '@/lib/auth';
+import { playNotificationSound } from '@/lib/sound';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);
@@ -23,7 +25,11 @@ export default function NotificationBell() {
     if (!user) return;
     connectSocket(user.id);
     const s = getSocket();
-    s.on('notification', () => qc.invalidateQueries({ queryKey: ['notifications'] }));
+    s.on('notification', (n: any) => {
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+      playNotificationSound();
+      toast(`${n?.title || 'New notification'}\n${n?.message || ''}`, { icon: '🔔', duration: 5000 });
+    });
     return () => { s.off('notification'); };
   }, [user, qc]);
 
