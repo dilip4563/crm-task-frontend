@@ -15,7 +15,7 @@ const PRIORITY_CHIP: Record<string, string> = {
   CRITICAL: 'bg-purple-50 text-purple-700 border border-purple-200',
 };
 const STATUS_CHIP: Record<string, string> = {
-  NOT_STARTED: 'bg-gray-100 text-gray-600',
+  NOT_STARTED: 'bg-gray-100 text-gray-600 dark:text-gray-300',
   IN_PROGRESS: 'bg-blue-50 text-blue-700',
   WAITING_APPROVAL: 'bg-amber-50 text-amber-700',
   COMPLETED: 'bg-emerald-50 text-emerald-700',
@@ -101,9 +101,9 @@ export default function AdminTasksPage() {
                 <tr><td colSpan={6} className="text-center py-12 text-gray-400">No tasks found</td></tr>
               ) : tasks.map((t: any, i: number) => (
                 <motion.tr key={t.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.02 }}
-                  className={`border-b border-gray-50 hover:bg-gray-50 transition-colors ${i % 2 === 0 ? '' : 'bg-gray-50/50'}`}>
+                  className={`border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${i % 2 === 0 ? '' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
                   <td className="px-4 py-3 max-w-[220px]">
-                    <p className="font-semibold text-gray-800 truncate">{t.title}</p>
+                    <p className="font-semibold text-gray-800 dark:text-gray-100 truncate">{t.title}</p>
                     {t.description && <p className="text-gray-400 text-xs truncate">{t.description}</p>}
                   </td>
                   <td className="px-4 py-3">
@@ -111,14 +111,14 @@ export default function AdminTasksPage() {
                       <div className="w-7 h-7 rounded-full bg-[#0F1C3F] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                         {t.assignedTo?.firstName?.[0]}{t.assignedTo?.lastName?.[0]}
                       </div>
-                      <span className="text-gray-700 text-xs">{t.assignedTo?.firstName} {t.assignedTo?.lastName}</span>
+                      <span className="text-gray-700 dark:text-gray-200 text-xs">{t.assignedTo?.firstName} {t.assignedTo?.lastName}</span>
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${PRIORITY_CHIP[t.priority]}`}>{t.priority}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_CHIP[t.status] || 'bg-gray-100 text-gray-600'}`}>
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_CHIP[t.status] || 'bg-gray-100 text-gray-600 dark:text-gray-300'}`}>
                       {(t.status || '').replace(/_/g, ' ')}
                     </span>
                   </td>
@@ -146,7 +146,7 @@ export default function AdminTasksPage() {
             <p className="text-sm text-gray-500">Showing {(page - 1) * 15 + 1}–{Math.min(page * 15, total)} of {total}</p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="btn-secondary p-2 disabled:opacity-40"><ChevronLeft size={16} /></button>
-              <span className="text-sm text-gray-600">{page} / {totalPages}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">{page} / {totalPages}</span>
               <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="btn-secondary p-2 disabled:opacity-40"><ChevronRight size={16} /></button>
             </div>
           </div>

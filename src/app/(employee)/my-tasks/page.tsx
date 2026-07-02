@@ -19,7 +19,7 @@ const STATUS_LABELS: Record<string, string> = {
   WAITING_APPROVAL: 'Waiting Approval', COMPLETED: 'Completed', OVERDUE: 'Overdue',
 };
 const STATUS_CHIP: Record<string, string> = {
-  NOT_STARTED: 'bg-gray-100 text-gray-600',
+  NOT_STARTED: 'bg-gray-100 text-gray-600 dark:text-gray-300',
   IN_PROGRESS: 'bg-blue-50 text-blue-700',
   WAITING_APPROVAL: 'bg-amber-50 text-amber-700',
   COMPLETED: 'bg-emerald-50 text-emerald-700',
@@ -54,10 +54,10 @@ function TaskCard({ task }: { task: any }) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2 flex-wrap">
-              <h3 className={`font-bold text-gray-800 ${task.status === 'COMPLETED' ? 'line-through text-gray-400' : ''}`}>{task.title}</h3>
+              <h3 className={`font-bold text-gray-800 dark:text-gray-100 ${task.status === 'COMPLETED' ? 'line-through text-gray-400' : ''}`}>{task.title}</h3>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${PRIORITY_CHIP[task.priority]}`}>{task.priority}</span>
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_CHIP[task.status] || 'bg-gray-100 text-gray-600'}`}>{STATUS_LABELS[task.status] || task.status}</span>
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_CHIP[task.status] || 'bg-gray-100 text-gray-600 dark:text-gray-300'}`}>{STATUS_LABELS[task.status] || task.status}</span>
               </div>
             </div>
             {task.description && <p className="text-sm text-gray-500 mt-1">{task.description}</p>}
@@ -93,7 +93,7 @@ function TaskCard({ task }: { task: any }) {
       <AnimatePresence>
         {expanded && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-            className="border-t border-gray-100 overflow-hidden">
+            className="border-t border-gray-100 dark:border-gray-800 overflow-hidden">
             <div className="p-5 space-y-3">
               {(task.comments || []).map((c: any) => (
                 <div key={c.id} className="flex gap-2.5">
@@ -101,8 +101,8 @@ function TaskCard({ task }: { task: any }) {
                     {c.user?.firstName?.[0]}{c.user?.lastName?.[0]}
                   </div>
                   <div className="bg-gray-50 rounded-xl px-3 py-2 flex-1">
-                    <p className="text-xs font-semibold text-gray-700">{c.user?.firstName} {c.user?.lastName}</p>
-                    <p className="text-sm text-gray-600 mt-0.5">{c.content}</p>
+                    <p className="text-xs font-semibold text-gray-700 dark:text-gray-200">{c.user?.firstName} {c.user?.lastName}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">{c.content}</p>
                     <p className="text-[10px] text-gray-400 mt-1">{new Date(c.createdAt).toLocaleString()}</p>
                   </div>
                 </div>
@@ -153,7 +153,7 @@ export default function MyTasksPage() {
               </div>
               <div>
                 <p className="text-xs text-gray-500 font-medium">{label}</p>
-                <p className="text-2xl font-extrabold text-[#0F1C3F]">{value ?? 0}</p>
+                <p className="text-2xl font-extrabold text-[#0F1C3F] dark:text-white">{value ?? 0}</p>
               </div>
             </div>
           ))}

@@ -125,11 +125,11 @@ export default function EmployeeDashboard() {
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
               className="card p-5 group cursor-default relative overflow-hidden">
               {/* hover sheen */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-blue-50/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-blue-50/80 dark:to-sky-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <div className="flex items-center justify-between relative z-10">
                 <div>
-                  <p className="text-xs text-gray-500 font-medium">{label}</p>
-                  <p className="text-3xl font-extrabold text-[#0F1C3F] mt-1"><CountUp value={value ?? 0} /></p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{label}</p>
+                  <p className="text-3xl font-extrabold text-[#0F1C3F] dark:text-white mt-1"><CountUp value={value ?? 0} /></p>
                 </div>
                 <motion.div whileHover={{ rotate: 8, scale: 1.1 }}
                   className={`bg-gradient-to-br ${grad} p-3 rounded-2xl shadow-lg transition-shadow duration-300 ${glow}`}>
@@ -147,7 +147,7 @@ export default function EmployeeDashboard() {
           {/* Task distribution */}
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
             className="card p-5 hover:shadow-lg transition-shadow duration-300">
-            <h3 className="font-bold text-[#0F1C3F] mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-[#0F1C3F] dark:text-white mb-4 flex items-center gap-2">
               <span className="w-1 h-4 rounded-full bg-[#0EA5E9]" /> Task Distribution
             </h3>
             {pieData.length > 0 ? (
@@ -170,19 +170,19 @@ export default function EmployeeDashboard() {
                     const idx = Object.values(STATUS_LABELS).indexOf(d.name);
                     return (
                       <motion.div key={d.name} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}
-                        className="flex items-center justify-between text-xs px-2 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+                        className="flex items-center justify-between text-xs px-2 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                         <div className="flex items-center gap-2">
                           <div className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS[idx % COLORS.length] }} />
-                          <span className="text-gray-600">{d.name}</span>
+                          <span className="text-gray-600 dark:text-gray-300">{d.name}</span>
                         </div>
-                        <span className="font-bold text-gray-800">{d.value}</span>
+                        <span className="font-bold text-gray-800 dark:text-gray-100">{d.value}</span>
                       </motion.div>
                     );
                   })}
                 </div>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-gray-300">
+              <div className="flex flex-col items-center justify-center py-12 text-gray-300 dark:text-gray-600 dark:text-gray-300">
                 <CheckCircle size={36} className="mb-2" />
                 <p className="text-gray-400 text-sm">No tasks yet</p>
               </div>
@@ -192,12 +192,12 @@ export default function EmployeeDashboard() {
           {/* Upcoming deadlines */}
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
             className="card p-5 hover:shadow-lg transition-shadow duration-300">
-            <h3 className="font-bold text-[#0F1C3F] mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-[#0F1C3F] dark:text-white mb-4 flex items-center gap-2">
               <span className="w-1 h-4 rounded-full bg-amber-400" /> Upcoming Deadlines
             </h3>
             <div className="space-y-3">
               {upcomingTasks.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-gray-300">
+                <div className="flex flex-col items-center justify-center py-12 text-gray-300 dark:text-gray-600 dark:text-gray-300">
                   <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}>
                     <CalendarClock size={36} className="mb-2" />
                   </motion.div>
@@ -209,13 +209,13 @@ export default function EmployeeDashboard() {
                 return (
                   <motion.div key={t.id} initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 + i * 0.08 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl border border-transparent hover:border-gray-200 hover:bg-white hover:shadow-sm transition-all duration-200">
+                    className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800/70 rounded-xl border border-transparent hover:border-gray-200 dark:hover:border-gray-700 hover:bg-white dark:hover:bg-gray-800 hover:shadow-sm transition-all duration-200">
                     <span className="relative flex h-2 w-2 mt-1.5 flex-shrink-0">
                       {diff <= 1 && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-60" />}
                       <span className={`relative inline-flex rounded-full h-2 w-2 ${diff <= 1 ? 'bg-red-400' : diff <= 3 ? 'bg-amber-400' : 'bg-emerald-400'}`} />
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-800 truncate">{t.title}</p>
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">{t.title}</p>
                       <p className={`text-xs mt-0.5 ${diff <= 1 ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
                         {diff === 0 ? '⚡ Due today' : diff === 1 ? 'Due tomorrow' : `Due in ${diff} days`}
                       </p>

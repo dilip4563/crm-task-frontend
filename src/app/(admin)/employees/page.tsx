@@ -88,20 +88,20 @@ export default function EmployeesPage() {
                 <tr><td colSpan={6} className="text-center py-12 text-gray-400">No employees found</td></tr>
               ) : employees.map((emp: any, i: number) => (
                 <motion.tr key={emp.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
-                  className={`border-b border-gray-50 hover:bg-gray-50 transition-colors ${i % 2 === 0 ? '' : 'bg-gray-50/50'}`}>
+                  className={`border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${i % 2 === 0 ? '' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-[#0F1C3F] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                         {emp.firstName?.[0]}{emp.lastName?.[0]}
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-800">{emp.firstName} {emp.lastName}</p>
+                        <p className="font-semibold text-gray-800 dark:text-gray-100">{emp.firstName} {emp.lastName}</p>
                         <p className="text-gray-400 text-xs">{emp.email}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-gray-600 font-mono text-xs">{emp.username}</td>
-                  <td className="px-4 py-3 text-gray-600">{emp.department || '—'}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300 font-mono text-xs">{emp.username}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{emp.department || '—'}</td>
                   <td className="px-4 py-3">
                     <div className="text-xs space-x-1">
                       <span className="text-gray-500">{emp._count?.assignedTasks ?? 0} total</span>
@@ -143,7 +143,7 @@ export default function EmployeesPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/50" />
             <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden">
+              className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden">
               <div className="bg-[#0F1C3F] p-6 text-center">
                 <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center mx-auto mb-3">
                   <CheckCircle size={24} className="text-white" />
@@ -156,7 +156,7 @@ export default function EmployeesPage() {
                   <div key={label} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
                     <div>
                       <p className="text-xs text-gray-400 font-semibold">{label}</p>
-                      <p className="font-mono font-bold text-[#0F1C3F]">{value}</p>
+                      <p className="font-mono font-bold text-[#0F1C3F] dark:text-white">{value}</p>
                     </div>
                     <button onClick={() => { navigator.clipboard.writeText(value); toast.success(`${label} copied!`); }}
                       className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">

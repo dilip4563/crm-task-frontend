@@ -48,7 +48,7 @@ export default function ReportsPage() {
           <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 p-1">
             {PERIOD_OPTS.map(p => (
               <button key={p.value} onClick={() => setPeriod(p.value)}
-                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${period === p.value ? 'bg-[#0F1C3F] text-white' : 'text-gray-500 hover:text-gray-700'}`}>
+                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${period === p.value ? 'bg-[#0F1C3F] text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-200'}`}>
                 {p.label}
               </button>
             ))}
@@ -73,14 +73,14 @@ export default function ReportsPage() {
           ].map(({ label, value, color }) => (
             <div key={label} className="card p-5">
               <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">{label}</p>
-              <p className={`text-3xl font-extrabold mt-1 ${color || 'text-[#0F1C3F]'}`}>{value ?? '—'}</p>
+              <p className={`text-3xl font-extrabold mt-1 ${color || 'text-[#0F1C3F] dark:text-white'}`}>{value ?? '—'}</p>
             </div>
           ))}
         </div>
 
         {/* Chart */}
         <div className="card p-5">
-          <h3 className="font-bold text-[#0F1C3F] mb-4 flex items-center gap-2"><Calendar size={16} className="text-[#0EA5E9]" /> Task Activity ({period})</h3>
+          <h3 className="font-bold text-[#0F1C3F] dark:text-white mb-4 flex items-center gap-2"><Calendar size={16} className="text-[#0EA5E9]" /> Task Activity ({period})</h3>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={chart}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -95,8 +95,8 @@ export default function ReportsPage() {
 
         {/* Employee performance table */}
         <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-100">
-            <h3 className="font-bold text-[#0F1C3F]">Employee Performance</h3>
+          <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+            <h3 className="font-bold text-[#0F1C3F] dark:text-white">Employee Performance</h3>
           </div>
           <table className="w-full text-sm">
             <thead className="bg-gray-50">
@@ -114,14 +114,14 @@ export default function ReportsPage() {
               ) : employeePerf.map((emp: any, i: number) => {
                 const rate = emp.totalAssigned > 0 ? Math.round((emp.completed / emp.totalAssigned) * 100) : 0;
                 return (
-                  <tr key={emp.id} className={`border-b border-gray-50 hover:bg-gray-50 transition-colors ${i % 2 === 0 ? '' : 'bg-gray-50/30'}`}>
+                  <tr key={emp.id} className={`border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${i % 2 === 0 ? '' : 'bg-gray-50/30'}`}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-full bg-[#0F1C3F] flex items-center justify-center text-white text-xs font-bold">{emp.firstName?.[0]}{emp.lastName?.[0]}</div>
-                        <span className="font-medium text-gray-800">{emp.firstName} {emp.lastName}</span>
+                        <span className="font-medium text-gray-800 dark:text-gray-100">{emp.firstName} {emp.lastName}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{emp.totalAssigned}</td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{emp.totalAssigned}</td>
                     <td className="px-4 py-3 text-emerald-600 font-semibold">{emp.completed}</td>
                     <td className="px-4 py-3 text-red-500">{emp.overdue}</td>
                     <td className="px-4 py-3">
@@ -129,7 +129,7 @@ export default function ReportsPage() {
                         <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                           <div className="h-full bg-[#0EA5E9] rounded-full" style={{ width: `${rate}%` }} />
                         </div>
-                        <span className="text-xs font-semibold text-gray-600">{rate}%</span>
+                        <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">{rate}%</span>
                       </div>
                     </td>
                   </tr>

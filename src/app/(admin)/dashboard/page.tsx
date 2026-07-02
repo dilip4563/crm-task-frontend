@@ -18,7 +18,7 @@ function StatCard({ label, value, sub, icon: Icon, color }: any) {
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-gray-500 font-medium">{label}</p>
-          <p className="text-3xl font-extrabold text-[#0F1C3F] mt-1">{value ?? '—'}</p>
+          <p className="text-3xl font-extrabold text-[#0F1C3F] dark:text-white mt-1">{value ?? '—'}</p>
           {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
         </div>
         <div className={`p-3 rounded-xl ${color}`}><Icon size={20} className="text-white" /></div>
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Weekly activity */}
           <div className="card p-5 lg:col-span-2">
-            <h3 className="font-bold text-[#0F1C3F] mb-4 flex items-center gap-2"><BarChart2 size={16} className="text-[#0EA5E9]" /> Weekly Task Activity</h3>
+            <h3 className="font-bold text-[#0F1C3F] dark:text-white mb-4 flex items-center gap-2"><BarChart2 size={16} className="text-[#0EA5E9]" /> Weekly Task Activity</h3>
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={weekly}>
                 <defs>
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
 
           {/* Priority breakdown */}
           <div className="card p-5">
-            <h3 className="font-bold text-[#0F1C3F] mb-4">Priority Breakdown</h3>
+            <h3 className="font-bold text-[#0F1C3F] dark:text-white mb-4">Priority Breakdown</h3>
             <ResponsiveContainer width="100%" height={160}>
               <PieChart>
                 <Pie data={priority} dataKey="count" nameKey="priority" cx="50%" cy="50%" outerRadius={65} innerRadius={40}>
@@ -97,9 +97,9 @@ export default function AdminDashboard() {
                 <div key={p.priority} className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <div className="w-2.5 h-2.5 rounded-full" style={{ background: PRIORITY_COLORS[p.priority] }} />
-                    <span className="text-gray-600 capitalize">{p.priority?.toLowerCase()}</span>
+                    <span className="text-gray-600 dark:text-gray-300 capitalize">{p.priority?.toLowerCase()}</span>
                   </div>
-                  <span className="font-bold text-gray-800">{p.count}</span>
+                  <span className="font-bold text-gray-800 dark:text-gray-100">{p.count}</span>
                 </div>
               ))}
             </div>
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Status distribution */}
           <div className="card p-5">
-            <h3 className="font-bold text-[#0F1C3F] mb-4">Status Distribution</h3>
+            <h3 className="font-bold text-[#0F1C3F] dark:text-white mb-4">Status Distribution</h3>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={statusDist} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f0f0f0" />
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
 
           {/* Top employees */}
           <div className="card p-5">
-            <h3 className="font-bold text-[#0F1C3F] mb-4">Top Performers</h3>
+            <h3 className="font-bold text-[#0F1C3F] dark:text-white mb-4">Top Performers</h3>
             <div className="space-y-3">
               {topEmployees.slice(0, 5).map((emp: any, i: number) => (
                 <div key={emp.id} className="flex items-center gap-3">
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
                     {emp.firstName?.[0]}{emp.lastName?.[0]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-800 truncate">{emp.firstName} {emp.lastName}</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">{emp.firstName} {emp.lastName}</p>
                     <div className="flex items-center gap-2 mt-0.5">
                       <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                         <div className="h-full bg-[#0EA5E9] rounded-full" style={{ width: `${Math.min(100, (emp.completedTasks / Math.max(emp.totalTasks, 1)) * 100)}%` }} />
