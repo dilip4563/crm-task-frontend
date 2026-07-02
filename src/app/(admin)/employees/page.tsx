@@ -4,9 +4,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminApi } from '@/lib/api';
 import Navbar from '@/components/shared/Navbar';
 import EmployeeModal from '@/components/admin/EmployeeModal';
-import { Plus, Search, RotateCcw, Trash2, Edit2, CheckCircle, XCircle, KeyRound } from 'lucide-react';
+import { Plus, Search, RotateCcw, Trash2, Edit2, CheckCircle, XCircle, KeyRound, Copy, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const STATUS_CHIP: Record<string, string> = {
   true: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
@@ -18,6 +18,7 @@ export default function EmployeesPage() {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editEmp, setEditEmp] = useState<any>(null);
+  const [credentials, setCredentials] = useState<{ userId: string; password: string; name: string } | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['employees', search],
@@ -27,7 +28,13 @@ export default function EmployeesPage() {
 
   const createMutation = useMutation({
     mutationFn: (d: any) => adminApi.createEmployee(d),
-    onSuccess: () => { toast.success('Employee created!'); qc.invalidateQueries({ queryKey: ['employees'] }); setModalOpen(false); },
+    onSuccess: (r, vars: any) => {
+      toast.success('Employee created!');
+      qc.invalidateQueries({ queryKey: ['employees'] });
+      setModalOpen(false);
+      const creds = r.data?.credentials;
+      if (creds) setCredentials({ userId: creds.userId, password: creds.password, name: `${vars.firstName} ${vars.lastName}` });
+    },
     onError: (e: any) => toast.error(e.response?.data?.error || 'Failed'),
   });
 
@@ -129,6 +136,47 @@ export default function EmployeesPage() {
       <EmployeeModal open={modalOpen} employee={editEmp} onClose={() => { setModalOpen(false); setEditEmp(null); }}
         onSubmit={d => editEmp ? updateMutation.mutate({ id: editEmp.id, data: d }) : createMutation.mutate(d)}
         isLoading={createMutation.isPending || updateMutation.isPending} />
+
+      {/* Generated credentials dialog */}
+      <AnimatePresence>
+        {credentials && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/50" />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden">
+              <div className="bg-[#0F1C3F] p-6 text-center">
+                <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center mx-auto mb-3">
+                  <CheckCircle size={24} className="text-white" />
+                </div>
+                <h2 className="text-white font-bold text-lg">Employee Created!</h2>
+                <p className="text-white/60 text-sm mt-1">Login credentials for {credentials.name}</p>
+              </div>
+              <div className="p-6 space-y-3">
+                {[['User ID', credentials.userId], ['Password', credentials.password]].map(([label, value]) => (
+                  <div key={label} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+                    <div>
+                      <p className="text-xs text-gray-400 font-semibold">{label}</p>
+                      <p className="font-mono font-bold text-[#0F1C3F]">{value}</p>
+                    </div>
+                    <button onClick={() => { navigator.clipboard.writeText(value); toast.success(`${label} copied!`); }}
+                      className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                      <Copy size={16} />
+                    </button>
+                  </div>
+                ))}
+                <button onClick={() => { navigator.clipboard.writeText(`User ID: ${credentials.userId}\nPassword: ${credentials.password}`); toast.success('Credentials copied!'); }}
+                  className="w-full btn-secondary text-sm flex items-center justify-center gap-2">
+                  <Copy size={14} /> Copy Both
+                </button>
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+                  <p className="text-xs text-amber-700">⚠️ This password is shown <b>only once</b>. Share it securely with the employee — they must change it on first login.</p>
+                </div>
+                <button onClick={() => setCredentials(null)} className="w-full btn-primary">Done</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

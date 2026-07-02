@@ -41,7 +41,6 @@ export default function EmployeeModal({ open, employee, onClose, onSubmit, isLoa
     if (!form.firstName.trim()) errs.firstName = 'Required';
     if (!form.lastName.trim()) errs.lastName = 'Required';
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Valid email required';
-    if (!form.username.trim()) errs.username = 'Required';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -77,12 +76,16 @@ export default function EmployeeModal({ open, employee, onClose, onSubmit, isLoa
                 <input type="email" className={`input ${errors.email ? 'border-red-400' : ''}`} value={form.email} onChange={e => set('email', e.target.value)} disabled={!!employee} />
                 {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Username <span className="text-red-500">*</span></label>
-                <input className={`input ${errors.username ? 'border-red-400' : ''}`} value={form.username} onChange={e => set('username', e.target.value)} disabled={!!employee} />
-                {errors.username && <p className="text-xs text-red-500 mt-1">{errors.username}</p>}
-                {!employee && <p className="text-xs text-gray-400 mt-1">Default password: <span className="font-mono">Employee@123</span></p>}
-              </div>
+              {employee ? (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">User ID</label>
+                  <input className="input" value={form.username} disabled />
+                </div>
+              ) : (
+                <div className="bg-blue-50 border border-blue-100 rounded-xl p-3">
+                  <p className="text-xs text-blue-700">🔐 A <b>User ID</b> and <b>Password</b> will be generated automatically after you create this employee. Share them with the employee — they must change the password on first login.</p>
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">Department</label>
