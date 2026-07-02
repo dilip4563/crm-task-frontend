@@ -43,7 +43,7 @@ export default function NotificationBell() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
   });
 
-  const notifications = data?.notifications || [];
+  const notifications = Array.isArray(data) ? data : (data?.notifications || []);
   const unread = notifications.filter((n: any) => !n.isRead).length;
 
   return (
