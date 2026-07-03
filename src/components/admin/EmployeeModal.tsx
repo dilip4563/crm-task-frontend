@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { adminApi } from '@/lib/api';
+import { isSuperAdmin } from '@/lib/auth';
 
 interface Props {
   open: boolean;
@@ -14,15 +17,22 @@ interface Props {
 const DEPTS = ['Engineering', 'Sales', 'Marketing', 'HR', 'Finance', 'Operations', 'Support', 'Design'];
 
 export default function EmployeeModal({ open, employee, onClose, onSubmit, isLoading }: Props) {
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', username: '', department: '', position: '', phone: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', username: '', department: '', position: '', phone: '', managerId: '' });
   const [errors, setErrors] = useState<any>({});
+  const superAdmin = isSuperAdmin();
+
+  const { data: adminsData } = useQuery({
+    queryKey: ['admins-for-select'],
+    queryFn: () => adminApi.getAdmins().then(r => r.data.admins),
+    enabled: open && superAdmin,
+  });
 
   useEffect(() => {
     if (open) {
       if (employee) {
-        setForm({ firstName: employee.firstName || '', lastName: employee.lastName || '', email: employee.email || '', username: employee.username || '', department: employee.department || '', position: employee.position || '', phone: employee.phone || '' });
+        setForm({ firstName: employee.firstName || '', lastName: employee.lastName || '', email: employee.email || '', username: employee.username || '', department: employee.department || '', position: employee.position || '', phone: employee.phone || '', managerId: employee.managerId || '' });
       } else {
-        setForm({ firstName: '', lastName: '', email: '', username: '', department: '', position: '', phone: '' });
+        setForm({ firstName: '', lastName: '', email: '', username: '', department: '', position: '', phone: '', managerId: '' });
       }
       setErrors({});
     }
@@ -84,6 +94,17 @@ export default function EmployeeModal({ open, employee, onClose, onSubmit, isLoa
               ) : (
                 <div className="bg-blue-50 border border-blue-100 rounded-xl p-3">
                   <p className="text-xs text-blue-700">🔐 A <b>User ID</b> and <b>Password</b> will be generated automatically after you create this employee. Share them with the employee — they must change the password on first login.</p>
+                </div>
+              )}
+              {superAdmin && !employee && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1.5">Reports To (Department Admin)</label>
+                  <select className="input" value={form.managerId} onChange={e => set('managerId', e.target.value)}>
+                    <option value="">No manager (reports to you)</option>
+                    {(adminsData || []).map((a: any) => (
+                      <option key={a.id} value={a.id}>{a.firstName} {a.lastName} — {a.department}</option>
+                    ))}
+                  </select>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-3">

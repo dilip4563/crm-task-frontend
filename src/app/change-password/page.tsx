@@ -21,7 +21,7 @@ export default function ChangePasswordPage() {
       const { data } = await authApi.changePassword({ currentPassword: form.currentPassword, newPassword: form.newPassword });
       setAuth(data.token, data.user);
       toast.success('Password changed successfully!');
-      router.push(data.user.role === 'ADMIN' ? '/dashboard' : '/my-tasks');
+      router.push(data.user.role !== 'EMPLOYEE' ? '/dashboard' : '/my-tasks');
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Failed to change password');
     } finally {

@@ -1,6 +1,6 @@
 export interface CRMUser {
   id: string; username: string; email: string; firstName: string; lastName: string;
-  role: 'ADMIN' | 'EMPLOYEE'; avatar?: string; mustChangePassword: boolean;
+  role: 'SUPER_ADMIN' | 'ADMIN' | 'EMPLOYEE'; avatar?: string; mustChangePassword: boolean;
 }
 
 export function getToken(): string | null {
@@ -25,5 +25,6 @@ export function clearAuth() {
   localStorage.removeItem('crm_user');
 }
 
-export function isAdmin(): boolean { return getUser()?.role === 'ADMIN'; }
+export function isAdmin(): boolean { const r = getUser()?.role; return r === 'ADMIN' || r === 'SUPER_ADMIN'; }
+export function isSuperAdmin(): boolean { return getUser()?.role === 'SUPER_ADMIN'; }
 export function isEmployee(): boolean { return getUser()?.role === 'EMPLOYEE'; }

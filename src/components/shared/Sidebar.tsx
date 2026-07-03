@@ -2,15 +2,23 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckSquare, LayoutDashboard, Users, ClipboardList, BarChart3, Bell, LogOut, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
-import { clearAuth, getUser, isAdmin } from '@/lib/auth';
+import { CheckSquare, LayoutDashboard, Users, ClipboardList, BarChart3, Bell, LogOut, ChevronLeft, ChevronRight, Settings, ShieldCheck } from 'lucide-react';
+import { clearAuth, getUser, isAdmin, isSuperAdmin } from '@/lib/auth';
 import { disconnectSocket } from '@/lib/socket';
 import { useState } from 'react';
 
-const adminNav = [
+const superAdminNav = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/admins', icon: ShieldCheck, label: 'Admins' },
   { href: '/employees', icon: Users, label: 'Employees' },
   { href: '/tasks', icon: ClipboardList, label: 'Tasks' },
+  { href: '/reports', icon: BarChart3, label: 'Reports' },
+];
+const adminNav = [
+  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/employees', icon: Users, label: 'My Team' },
+  { href: '/tasks', icon: ClipboardList, label: 'Tasks' },
+  { href: '/my-tasks', icon: CheckSquare, label: 'My Tasks' },
   { href: '/reports', icon: BarChart3, label: 'Reports' },
 ];
 const employeeNav = [
@@ -24,7 +32,7 @@ export default function Sidebar() {
   const user = getUser();
   const admin = isAdmin();
   const [collapsed, setCollapsed] = useState(false);
-  const nav = admin ? adminNav : employeeNav;
+  const nav = isSuperAdmin() ? superAdminNav : admin ? adminNav : employeeNav;
 
   const logout = () => { disconnectSocket(); clearAuth(); router.push('/login'); };
 
@@ -83,7 +91,7 @@ export default function Sidebar() {
               {!collapsed && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-w-0">
                   <p className="text-white text-xs font-semibold truncate">{user.firstName} {user.lastName}</p>
-                  <p className="text-white/40 text-xs truncate capitalize">{user.role?.toLowerCase()}</p>
+                  <p className="text-white/40 text-xs truncate capitalize">{user.role?.toLowerCase().replace('_', ' ')}</p>
                 </motion.div>
               )}
             </AnimatePresence>

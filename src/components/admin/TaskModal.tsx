@@ -21,8 +21,8 @@ export default function TaskModal({ open, task, onClose, onSubmit, isLoading }: 
   const [empOpen, setEmpOpen] = useState(false);
 
   const { data: emps } = useQuery({
-    queryKey: ['employees-search', empSearch],
-    queryFn: () => adminApi.getEmployees({ search: empSearch }).then(r => r.data.employees),
+    queryKey: ['assignees-search', empSearch],
+    queryFn: () => adminApi.getAssignees({ search: empSearch }).then(r => r.data.assignees),
   });
 
   useEffect(() => {
@@ -126,10 +126,15 @@ export default function TaskModal({ open, task, onClose, onSubmit, isLoading }: 
                           <div className="w-7 h-7 rounded-full bg-[#0F1C3F] flex items-center justify-center text-white text-xs font-bold">
                             {e.firstName?.[0]}{e.lastName?.[0]}
                           </div>
-                          <div>
+                          <div className="flex-1">
                             <span className="font-medium">{e.firstName} {e.lastName}</span>
                             <span className="text-gray-400 text-xs ml-1">· {e.username}</span>
                           </div>
+                          {e.role === 'ADMIN' && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300">
+                              ADMIN{e.department ? ` · ${e.department}` : ''}
+                            </span>
+                          )}
                         </button>
                       ))}
                     </div>

@@ -22,7 +22,7 @@ export default function LoginPage() {
       setAuth(data.token, data.user);
       toast.success(`Welcome back, ${data.user.firstName}!`);
       if (data.user.mustChangePassword) { router.push('/change-password'); return; }
-      router.push(data.user.role === 'ADMIN' ? '/dashboard' : '/my-tasks');
+      router.push(data.user.role !== 'EMPLOYEE' ? '/dashboard' : '/my-tasks');
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Login failed');
     } finally {

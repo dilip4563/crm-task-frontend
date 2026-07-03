@@ -40,6 +40,11 @@ export const adminApi = {
   getActivity: (id: string) => api.get(`/admin/employees/${id}/activity`),
   getReports: (params?: any) => api.get('/admin/reports', { params }),
   exportReport: (params?: any) => api.get('/admin/reports/export', { params, responseType: 'blob' }),
+  getAssignees: (params?: any) => api.get('/admin/assignees', { params }),
+  getAdmins: () => api.get('/admin/admins'),
+  createAdmin: (data: any) => api.post('/admin/admins', data),
+  updateAdmin: (id: string, data: any) => api.put(`/admin/admins/${id}`, data),
+  resetAdminPassword: (id: string) => api.post(`/admin/admins/${id}/reset-password`),
 };
 
 // Tasks
