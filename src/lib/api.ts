@@ -25,6 +25,7 @@ export default api;
 // Auth
 export const authApi = {
   login: (data: { username: string; password: string }) => api.post('/auth/login', data),
+  logout: () => api.post('/auth/logout'),
   me: () => api.get('/auth/me'),
   changePassword: (data: { currentPassword?: string; newPassword: string }) => api.post('/auth/change-password', data),
 };
@@ -61,6 +62,22 @@ export const taskApi = {
 // Employee
 export const employeeApi = {
   getDashboard: () => api.get('/employee/dashboard'),
+};
+
+// Attendance
+export const attendanceApi = {
+  getToday: () => api.get('/attendance/me/today'),
+  getHistory: (month?: string) => api.get('/attendance/me/history', { params: { month } }),
+  startBreak: () => api.post('/attendance/break/start'),
+  endBreak: () => api.post('/attendance/break/end'),
+  submitCorrection: (data: any) => api.post('/attendance/corrections', data),
+  myCorrections: () => api.get('/attendance/corrections/mine'),
+  pendingCorrections: () => api.get('/attendance/corrections/pending'),
+  reviewCorrection: (id: string, action: 'APPROVED' | 'REJECTED') => api.patch(`/attendance/corrections/${id}`, { action }),
+  adminOverview: () => api.get('/attendance/admin/overview'),
+  exportCsv: (month?: string) => api.get('/attendance/admin/export', { params: { month }, responseType: 'blob' }),
+  getSettings: () => api.get('/attendance/settings'),
+  updateSettings: (data: any) => api.put('/attendance/settings', data),
 };
 
 // Notifications

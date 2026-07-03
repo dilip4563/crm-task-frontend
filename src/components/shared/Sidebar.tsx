@@ -2,9 +2,10 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckSquare, LayoutDashboard, Users, ClipboardList, BarChart3, Bell, LogOut, ChevronLeft, ChevronRight, Settings, ShieldCheck } from 'lucide-react';
+import { CheckSquare, LayoutDashboard, Users, ClipboardList, BarChart3, Bell, LogOut, ChevronLeft, ChevronRight, Settings, ShieldCheck, CalendarClock } from 'lucide-react';
 import { clearAuth, getUser, isAdmin, isSuperAdmin } from '@/lib/auth';
 import { disconnectSocket } from '@/lib/socket';
+import { authApi } from '@/lib/api';
 import { useState } from 'react';
 
 const superAdminNav = [
@@ -12,6 +13,7 @@ const superAdminNav = [
   { href: '/admins', icon: ShieldCheck, label: 'Admins' },
   { href: '/employees', icon: Users, label: 'Employees' },
   { href: '/tasks', icon: ClipboardList, label: 'Tasks' },
+  { href: '/attendance-admin', icon: CalendarClock, label: 'Attendance' },
   { href: '/reports', icon: BarChart3, label: 'Reports' },
 ];
 const adminNav = [
@@ -19,11 +21,13 @@ const adminNav = [
   { href: '/employees', icon: Users, label: 'My Team' },
   { href: '/tasks', icon: ClipboardList, label: 'Tasks' },
   { href: '/my-tasks', icon: CheckSquare, label: 'My Tasks' },
+  { href: '/attendance-admin', icon: CalendarClock, label: 'Attendance' },
   { href: '/reports', icon: BarChart3, label: 'Reports' },
 ];
 const employeeNav = [
   { href: '/my-tasks', icon: ClipboardList, label: 'My Tasks' },
   { href: '/my-dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/attendance', icon: CalendarClock, label: 'Attendance' },
 ];
 
 export default function Sidebar() {
@@ -34,7 +38,10 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const nav = isSuperAdmin() ? superAdminNav : admin ? adminNav : employeeNav;
 
-  const logout = () => { disconnectSocket(); clearAuth(); router.push('/login'); };
+  const logout = async () => {
+    try { await authApi.logout(); } catch { /* still log out locally */ }
+    disconnectSocket(); clearAuth(); router.push('/login');
+  };
 
   return (
     <motion.aside animate={{ width: collapsed ? 72 : 240 }} transition={{ duration: 0.2, ease: 'easeInOut' }}
