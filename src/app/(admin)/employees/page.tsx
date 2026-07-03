@@ -7,6 +7,7 @@ import EmployeeModal from '@/components/admin/EmployeeModal';
 import { Plus, Search, RotateCcw, Trash2, Edit2, CheckCircle, XCircle, KeyRound, Copy, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { isSuperAdmin } from '@/lib/auth';
 
 const STATUS_CHIP: Record<string, string> = {
   true: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
@@ -67,9 +68,11 @@ export default function EmployeesPage() {
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input className="input pl-9 w-64" placeholder="Search employees…" value={search} onChange={e => setSearch(e.target.value)} />
           </div>
-          <button onClick={() => { setEditEmp(null); setModalOpen(true); }} className="btn-primary flex items-center gap-2 text-sm">
-            <Plus size={16} /> Add Employee
-          </button>
+          {isSuperAdmin() && (
+            <button onClick={() => { setEditEmp(null); setModalOpen(true); }} className="btn-primary flex items-center gap-2 text-sm">
+              <Plus size={16} /> Add Employee
+            </button>
+          )}
         </div>
 
         <div className="card overflow-hidden">
