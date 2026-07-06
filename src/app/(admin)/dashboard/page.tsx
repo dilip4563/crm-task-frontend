@@ -1,10 +1,14 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminApi } from '@/lib/api';
 import Navbar from '@/components/shared/Navbar';
-import { Users, CheckSquare, Clock, TrendingUp, AlertCircle, BarChart2 } from 'lucide-react';
+import { Users, CheckSquare, Clock, TrendingUp, AlertCircle, BarChart2, Wifi, Coffee } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getSocket, connectSocket } from '@/lib/socket';
+import { getUser } from '@/lib/auth';
+import toast from 'react-hot-toast';
 
 const PRIORITY_COLORS: Record<string, string> = { LOW: '#22c55e', MEDIUM: '#f59e0b', HIGH: '#ef4444', CRITICAL: '#7c3aed' };
 const STATUS_COLORS: Record<string, string> = {
@@ -28,17 +32,33 @@ function StatCard({ label, value, sub, icon: Icon, color }: any) {
 }
 
 export default function AdminDashboard() {
+  const qc = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: () => adminApi.getDashboardStats().then(r => r.data),
     refetchInterval: 60000,
   });
 
+  // Live presence: refresh instantly when someone logs in/out
+  useEffect(() => {
+    const user = getUser();
+    if (!user) return;
+    connectSocket(user.id);
+    const s = getSocket();
+    const onPresence = (p: any) => {
+      qc.invalidateQueries({ queryKey: ['admin-stats'] });
+      toast(p.online ? `🟢 ${p.name} is now online` : `⚪ ${p.name} went offline`, { duration: 3500 });
+    };
+    s.on('presence', onPresence);
+    return () => { s.off('presence', onPresence); };
+  }, [qc]);
+
   const stats = data?.stats;
   const weekly = data?.weeklyChart || [];
   const priority = data?.priorityBreakdown || [];
   const statusDist = data?.statusDistribution || [];
   const topEmployees = data?.topEmployees || [];
+  const activeNow = data?.activeNow || [];
 
   return (
     <div>
@@ -51,6 +71,50 @@ export default function AdminDashboard() {
           <StatCard label="Completed Today" value={stats?.completedToday} sub="Tasks done today" icon={TrendingUp} color="bg-emerald-500" />
           <StatCard label="Overdue" value={stats?.overdue} sub="Need attention" icon={AlertCircle} color="bg-red-500" />
         </div>
+
+        {/* Active Now — live */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-[#0F1C3F] dark:text-white flex items-center gap-2">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
+              </span>
+              Active Now
+            </h3>
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+              {activeNow.length} online
+            </span>
+          </div>
+          {activeNow.length === 0 ? (
+            <div className="flex items-center justify-center gap-2 py-6 text-gray-400 text-sm">
+              <Wifi size={16} /> No one is online right now
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              <AnimatePresence>
+                {activeNow.map((u: any) => (
+                  <motion.div key={u.id} layout initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.85 }}
+                    className="flex items-center gap-3 pl-2 pr-4 py-2 rounded-2xl bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-800 hover:shadow-sm transition-shadow">
+                    <div className="relative">
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold ${u.role === 'ADMIN' ? 'bg-gradient-to-br from-purple-600 to-indigo-500' : 'bg-[#0F1C3F]'}`}>
+                        {u.firstName?.[0]}{u.lastName?.[0]}
+                      </div>
+                      <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 ${u.onBreak ? 'bg-amber-400' : 'bg-emerald-400'}`} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-gray-800 dark:text-gray-100">{u.firstName} {u.lastName}</p>
+                      <p className="text-[10px] text-gray-400 flex items-center gap-1">
+                        {u.onBreak ? <><Coffee size={9} /> On break</> : <>Since {new Date(u.loginAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</>}
+                        {u.department ? ` · ${u.department}` : ''}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
+        </motion.div>
 
         {/* Charts row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
